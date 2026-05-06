@@ -59,7 +59,7 @@ export default function ShopPage() {
 
       <nav className="nav">
         <a href="/" className="brand">
-          <span>⚡</span> {t.brand}
+          {t.brand}
         </a>
 
         <div className="navRight">

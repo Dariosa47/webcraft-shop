@@ -9,41 +9,40 @@ const translations = {
     shop: "Shop",
     pricing: "Cijene",
     contact: "Kontakt",
-    heroBadge: "GOTOVI WEB TEMPLATE-I + ADMIN PANEL",
-    heroTitle: "Gotove web stranice koje sam uređuješ",
-    heroText: "Nudim gotove template web stranica koji se u samo par minuta preprave i ne zahtijevaju nikakvo predznanje programiranja.",
+    heroBadge: "GOTOVI WEB TEMPLATE-I ZA MALE BIZNISE",
+    heroTitle: "Moderne web stranice za male biznise",
+    heroText: "Nudim gotove web template stranice koje prilagođavam tvom biznisu. Brzo, moderno i bez komplikacija.",
     primary: "Pogledaj template",
     secondary: "Kontaktiraj me",
     latest: "Najnoviji template-i",
     latestText: "Zadnji dodani proizvodi iz shopa.",
     latestBadge: "NAJNOVIJI TEMPLATE",
     openProduct: "Otvori proizvod",
-    aboutTitle: "Što nudim?",
-    aboutText: "Izrađujem moderne web stranice za male biznise. Klijent dobije gotov dizajn, admin panel i mogućnost da sam mijenja tekstove, slike, cijene, galeriju i kontakt bez programiranja.",
+    aboutTitle: "Što radim?",
+    aboutText: "Izrada modernih web stranica za frizerske salone, barbershopove, restorane i male biznise. Gotovi template-i omogućuju brzo i povoljno rješenje bez dugog čekanja.",
     pricingTitle: "Cijene",
     templatePriceTitle: "Gotovi template-i",
     templatePrice: "100€ – 200€",
-    templatePriceText: "Gotova web stranica prilagođena tvojem biznisu.",
+    templatePriceText: "Jednokratna kupnja gotove web stranice. Kupac sam lokalno uređuje sadržaj i sam brine o hostingu.",
     customPriceTitle: "Custom stranica",
     customPrice: "500€+",
-    customPriceText: "Poseban dizajn i funkcionalnosti izrađene po dogovoru.",
+    customPriceText: "Poseban dizajn i funkcionalnosti izrađene po dogovoru za ozbiljnije projekte.",
     hostingPriceTitle: "Hosting + support",
     hostingPrice: "30€/mj",
-    hostingPriceText: "Deploy, hosting, tehničko održavanje, support i manje izmjene. Sve mi riješimo za tebe.",
+    hostingPriceText: "Deploy, hosting, održavanje, support i manje izmjene. Ti pošalješ izmjene, mi ih odradimo.",
     contactTitle: "Pokrenimo tvoj web",
     contactText: "Javi mi se za demo, cijenu ili dogovor oko template-a.",
     whatsapp: "WhatsApp",
     email: "Email",
-    footer: "Gotovi web template-i za male biznise",
-    featureAdminTitle: "Admin panel",
-    featureAdminText: "Klijent sam mijenja tekst, slike, cijene, galeriju i kontakt.",
+    footer: "Web template-i za male biznise",
+    featureAdminTitle: "Brza prilagodba",
+    featureAdminText: "Template se brzo prilagođava tvom salonu, restoranu ili biznisu.",
     featureResponsiveTitle: "Responsive",
     featureResponsiveText: "Stranica radi na mobitelu, tabletu i računalu.",
-    featureStyleTitle: "Boje i stil",
-    featureStyleText: "Moguće je mijenjati boje, slike i sadržaj stranice.",
-    featureWhatsappTitle: "WhatsApp",
-    featureWhatsappText: "Direktan kontakt i rezervacije preko telefona ili WhatsAppa.",
-    adminPanel: "Admin panel",
+    featureStyleTitle: "Moderan dizajn",
+    featureStyleText: "Profesionalan izgled koji se može prilagoditi brendu klijenta.",
+    featureWhatsappTitle: "Kontakt opcije",
+    featureWhatsappText: "Moguće dodati poziv, WhatsApp, email i kontakt sekciju.",
     services: "Usluge"
   },
   en: {
@@ -52,41 +51,40 @@ const translations = {
     shop: "Shop",
     pricing: "Pricing",
     contact: "Contact",
-    heroBadge: "READY-MADE WEBSITE TEMPLATES + ADMIN PANEL",
-    heroTitle: "Ready-made websites you can edit yourself",
-    heroText: "I offer ready-made website templates that can be customized in just a few minutes and require no programming knowledge.",
+    heroBadge: "READY-MADE WEBSITE TEMPLATES FOR SMALL BUSINESSES",
+    heroTitle: "Modern websites for small businesses",
+    heroText: "I offer ready-made website templates customized for your business. Fast, modern and without complications.",
     primary: "View templates",
     secondary: "Contact me",
     latest: "Latest templates",
     latestText: "Newest products from the shop.",
     latestBadge: "LATEST TEMPLATE",
     openProduct: "Open product",
-    aboutTitle: "What do I offer?",
-    aboutText: "I build modern websites for small businesses. The client gets a finished design, admin panel and can edit texts, images, prices, gallery and contact details without programming.",
+    aboutTitle: "What do I do?",
+    aboutText: "I build modern websites for salons, barbershops, restaurants and small businesses. Ready-made templates make the process faster and more affordable.",
     pricingTitle: "Pricing",
     templatePriceTitle: "Ready-made templates",
     templatePrice: "100€ – 200€",
-    templatePriceText: "A ready-made website customized for your business.",
+    templatePriceText: "One-time purchase of a ready-made website. The buyer edits locally and handles hosting themselves.",
     customPriceTitle: "Custom website",
     customPrice: "500€+",
-    customPriceText: "Custom design and functionality built by agreement.",
+    customPriceText: "Custom design and functionality built by agreement for more serious projects.",
     hostingPriceTitle: "Hosting + support",
     hostingPrice: "30€/mo",
-    hostingPriceText: "Deploy, hosting, technical maintenance, support and smaller changes. We handle everything for you.",
+    hostingPriceText: "Deploy, hosting, maintenance, support and small changes. You send the changes, we handle them.",
     contactTitle: "Let’s launch your website",
     contactText: "Contact me for a demo, pricing or template agreement.",
     whatsapp: "WhatsApp",
     email: "Email",
-    footer: "Ready-made website templates for small businesses",
-    featureAdminTitle: "Admin panel",
-    featureAdminText: "The client can edit text, images, prices, gallery and contact details.",
+    footer: "Website templates for small businesses",
+    featureAdminTitle: "Fast customization",
+    featureAdminText: "The template is quickly customized for your salon, restaurant or business.",
     featureResponsiveTitle: "Responsive",
     featureResponsiveText: "The website works on mobile, tablet and desktop.",
-    featureStyleTitle: "Colors and style",
-    featureStyleText: "Colors, images and website content can be changed.",
-    featureWhatsappTitle: "WhatsApp",
-    featureWhatsappText: "Direct contact and bookings via phone or WhatsApp.",
-    adminPanel: "Admin panel",
+    featureStyleTitle: "Modern design",
+    featureStyleText: "Professional look that can be adjusted to the client’s brand.",
+    featureWhatsappTitle: "Contact options",
+    featureWhatsappText: "Phone, WhatsApp, email and contact sections can be added.",
     services: "Services"
   },
   de: {
@@ -95,41 +93,40 @@ const translations = {
     shop: "Shop",
     pricing: "Preise",
     contact: "Kontakt",
-    heroBadge: "FERTIGE WEBSITE-TEMPLATES + ADMIN PANEL",
-    heroTitle: "Fertige Webseiten die du selbst bearbeiten kannst",
-    heroText: "Ich biete fertige Website-Templates an, die in wenigen Minuten angepasst werden können und keine Programmierkenntnisse benötigen.",
+    heroBadge: "FERTIGE WEBSITE-TEMPLATES FÜR KLEINE UNTERNEHMEN",
+    heroTitle: "Moderne Webseiten für kleine Unternehmen",
+    heroText: "Ich biete fertige Website-Templates an, die an dein Unternehmen angepasst werden. Schnell, modern und unkompliziert.",
     primary: "Templates ansehen",
     secondary: "Kontakt",
     latest: "Neueste Templates",
     latestText: "Die neuesten Produkte aus dem Shop.",
     latestBadge: "NEUESTES TEMPLATE",
     openProduct: "Produkt öffnen",
-    aboutTitle: "Was biete ich an?",
-    aboutText: "Ich erstelle moderne Webseiten für kleine Unternehmen. Der Kunde bekommt ein fertiges Design, ein Admin Panel und kann Texte, Bilder, Preise, Galerie und Kontakt selbst ändern.",
+    aboutTitle: "Was mache ich?",
+    aboutText: "Ich erstelle moderne Webseiten für Salons, Barbershops, Restaurants und kleine Unternehmen. Fertige Templates sparen Zeit und Kosten.",
     pricingTitle: "Preise",
     templatePriceTitle: "Fertige Templates",
     templatePrice: "100€ – 200€",
-    templatePriceText: "Eine fertige Website, angepasst an dein Unternehmen.",
+    templatePriceText: "Einmaliger Kauf einer fertigen Website. Der Käufer bearbeitet lokal und kümmert sich selbst um Hosting.",
     customPriceTitle: "Custom Website",
     customPrice: "500€+",
-    customPriceText: "Individuelles Design und Funktionen nach Absprache.",
+    customPriceText: "Individuelles Design und Funktionen nach Absprache für größere Projekte.",
     hostingPriceTitle: "Hosting + Support",
     hostingPrice: "30€/Monat",
-    hostingPriceText: "Deploy, Hosting, technische Wartung, Support und kleinere Änderungen. Wir übernehmen alles für dich.",
+    hostingPriceText: "Deploy, Hosting, Wartung, Support und kleinere Änderungen. Du schickst Änderungen, wir erledigen sie.",
     contactTitle: "Starten wir deine Website",
     contactText: "Melde dich für Demo, Preis oder Template-Abstimmung.",
     whatsapp: "WhatsApp",
     email: "E-Mail",
-    footer: "Fertige Website-Templates für kleine Unternehmen",
-    featureAdminTitle: "Admin Panel",
-    featureAdminText: "Der Kunde kann Texte, Bilder, Preise, Galerie und Kontakt selbst ändern.",
+    footer: "Website-Templates für kleine Unternehmen",
+    featureAdminTitle: "Schnelle Anpassung",
+    featureAdminText: "Das Template wird schnell an deinen Salon, dein Restaurant oder dein Business angepasst.",
     featureResponsiveTitle: "Responsive",
     featureResponsiveText: "Die Website funktioniert auf Handy, Tablet und Desktop.",
-    featureStyleTitle: "Farben und Stil",
-    featureStyleText: "Farben, Bilder und Website-Inhalte können geändert werden.",
-    featureWhatsappTitle: "WhatsApp",
-    featureWhatsappText: "Direkter Kontakt und Buchungen per Telefon oder WhatsApp.",
-    adminPanel: "Admin Panel",
+    featureStyleTitle: "Modernes Design",
+    featureStyleText: "Professionelles Aussehen, passend zur Marke des Kunden.",
+    featureWhatsappTitle: "Kontaktoptionen",
+    featureWhatsappText: "Telefon, WhatsApp, E-Mail und Kontaktbereiche können hinzugefügt werden.",
     services: "Leistungen"
   }
 };
@@ -186,21 +183,21 @@ export default function Home() {
 
             <div
               className="mockHero"
-            style={{
-  backgroundImage: latestProduct
-    ? `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url("${latestProduct.cover_image}")`
-    : undefined,
-  backgroundSize: "cover",
-  backgroundPosition: "center"
-}}
+              style={{
+                backgroundImage: latestProduct
+                  ? `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url("${latestProduct.cover_image}")`
+                  : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center"
+              }}
             >
               <p>{latestProduct ? t.latestBadge : "SALON TEMPLATE"}</p>
-              <h2>{latestProduct ? productText(latestProduct, "title", lang) : t.adminPanel}</h2>
+              <h2>{latestProduct ? productText(latestProduct, "title", lang) : "Template"}</h2>
             </div>
 
             <div className="mockCards">
-              <div>{latestProduct ? latestProduct.price : t.services}</div>
-              <div>{t.adminPanel}</div>
+              <div>{latestProduct ? latestProduct.price : "100€ – 200€"}</div>
+              <div>Responsive dizajn</div>
               <div>{t.openProduct}</div>
             </div>
           </a>
@@ -211,7 +208,7 @@ export default function Home() {
           <p>{t.aboutText}</p>
 
           <div className="features">
-            <Card icon="🛠️" title={t.featureAdminTitle} text={t.featureAdminText} />
+            <Card icon="⚙️" title={t.featureAdminTitle} text={t.featureAdminText} />
             <Card icon="📱" title={t.featureResponsiveTitle} text={t.featureResponsiveText} />
             <Card icon="🎨" title={t.featureStyleTitle} text={t.featureStyleText} />
             <Card icon="💬" title={t.featureWhatsappTitle} text={t.featureWhatsappText} />
@@ -280,7 +277,7 @@ function Nav({ t, lang, setLang, drawerOpen, setDrawerOpen }) {
   return (
     <>
       <nav className="nav">
-        <a href="/" className="brand"><span>⚡</span> {t.brand}</a>
+        <a href="/" className="brand">{t.brand}</a>
 
         <div className="desktopNav">
           <a href="/#about">{t.about}</a>
@@ -384,15 +381,6 @@ a { color: inherit; }
   display: flex;
   gap: 10px;
   align-items: center;
-}
-
-.brand span {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #3b82f6, #a855f7);
 }
 
 .desktopNav {

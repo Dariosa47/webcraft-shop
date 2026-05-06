@@ -84,7 +84,7 @@ export default function ProductPage() {
         <a href={`/shop?lang=${lang}`}>{t.backToShop}</a>
       </main>
     );
-  }
+  }FF
 
   return (
     <main>
@@ -92,7 +92,7 @@ export default function ProductPage() {
 
       <nav className="nav">
         <a href="/" className="brand">
-          <span>⚡</span> {t.brand}
+          {t.brand}
         </a>
 
         <a href={`/shop?lang=${lang}`} className="back">
@@ -114,7 +114,7 @@ export default function ProductPage() {
             <a
               className="primaryBtn"
               href={`https://wa.me/385994157416?text=${encodeURIComponent(
-                `${t.request}: ${productText(product, "title", lang)}`
+                `Pozdrav, zanima me web template "${productText(product, "title", lang)}". Možete li mi poslati više informacija?`
               )}`}
               target="_blank"
             >
