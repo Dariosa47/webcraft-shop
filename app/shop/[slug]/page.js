@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
 const translations = {
@@ -14,28 +14,6 @@ const translations = {
     gallery: "Galerija",
     notFound: "Proizvod nije pronađen",
     backToShop: "Nazad na shop"
-  },
-  en: {
-    brand: "KrpaDevelopment",
-    shopBack: "← Shop",
-    badge: "TEMPLATE",
-    request: "Request this template",
-    all: "All templates",
-    description: "Description",
-    gallery: "Gallery",
-    notFound: "Product not found",
-    backToShop: "Back to shop"
-  },
-  de: {
-    brand: "KrpaDevelopment",
-    shopBack: "← Shop",
-    badge: "TEMPLATE",
-    request: "Dieses Template anfragen",
-    all: "Alle Templates",
-    description: "Beschreibung",
-    gallery: "Galerie",
-    notFound: "Produkt nicht gefunden",
-    backToShop: "Zurück zum Shop"
   }
 };
 
@@ -46,11 +24,9 @@ function productText(product, field, lang) {
 
 export default function ProductPage() {
   const params = useParams();
-  const searchParams = useSearchParams();
   const [product, setProduct] = useState(null);
 
-  const langParam = searchParams.get("lang");
-  const lang = ["hr", "en", "de"].includes(langParam) ? langParam : "hr";
+  const lang = "hr";
   const t = translations[lang];
 
   useEffect(() => {
@@ -70,21 +46,27 @@ export default function ProductPage() {
       setProduct(data);
     }
 
-    loadProduct();
+    if (params?.slug) {
+      loadProduct();
+    }
   }, [params.slug]);
 
   if (product === null) {
-    return <p style={{ padding: 40 }}>Loading...</p>;
+    return (
+      <main style={{ padding: 40, background: "#070a13", color: "white", minHeight: "100vh" }}>
+        Loading...
+      </main>
+    );
   }
 
   if (product === false) {
     return (
       <main style={{ padding: 40, fontFamily: "Arial", background: "#070a13", color: "white", minHeight: "100vh" }}>
         <h1>{t.notFound}</h1>
-        <a href={`/shop?lang=${lang}`}>{t.backToShop}</a>
+        <a href="/shop">{t.backToShop}</a>
       </main>
     );
-  }FF
+  }
 
   return (
     <main>
@@ -95,7 +77,7 @@ export default function ProductPage() {
           {t.brand}
         </a>
 
-        <a href={`/shop?lang=${lang}`} className="back">
+        <a href="/shop" className="back">
           {t.shopBack}
         </a>
       </nav>
@@ -121,7 +103,7 @@ export default function ProductPage() {
               {t.request}
             </a>
 
-            <a className="secondaryBtn" href={`/shop?lang=${lang}`}>
+            <a className="secondaryBtn" href="/shop">
               {t.all}
             </a>
           </div>
@@ -189,21 +171,6 @@ a {
 .back {
   text-decoration: none;
   font-weight: 900;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand span {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #3b82f6, #a855f7);
 }
 
 .hero {
