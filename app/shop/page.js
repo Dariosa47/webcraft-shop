@@ -1,13 +1,56 @@
 "use client";
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+
+const translations = {
+  hr: {
+    brand: "KrpaDevelopment",
+    home: "← Home",
+    badge: "TEMPLATE SHOP",
+    title: "Odaberi web template",
+    text: "Gotove web stranice koje se mogu prilagoditi tvom biznisu.",
+    empty: "Trenutno nema proizvoda."
+  },
+  en: {
+    brand: "KrpaDevelopment",
+    home: "← Home",
+    badge: "TEMPLATE SHOP",
+    title: "Choose a website template",
+    text: "Ready-made websites that can be customized for your business.",
+    empty: "No products yet."
+  },
+  de: {
+    brand: "KrpaDevelopment",
+    home: "← Home",
+    badge: "TEMPLATE SHOP",
+    title: "Wähle ein Website-Template",
+    text: "Fertige Webseiten, die an dein Unternehmen angepasst werden können.",
+    empty: "Noch keine Produkte."
+  }
+};
+
+function productText(product, field, lang) {
+  const key = `${field}_${lang}`;
+  return product?.[key] || product?.[field] || "";
+}
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
+  const [lang, setLang] = useState("hr");
+  const t = translations[lang];
 
   useEffect(() => {
-    fetch("/api/products")
-      .then((r) => r.json())
-      .then((items) => setProducts(items.filter((p) => p.active)));
+    async function loadProducts() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false });
+
+      if (!error) setProducts(data || []);
+    }
+
+    loadProducts();
   }, []);
 
   return (
@@ -15,21 +58,46 @@ export default function ShopPage() {
       <style>{styles}</style>
 
       <nav className="nav">
-        <a href="/" className="brand"><span>⚡</span> WebCraft</a>
-        <a href="/" className="back">← Home</a>
+        <a href="/" className="brand">
+          <span>⚡</span> {t.brand}
+        </a>
+
+        <div className="navRight">
+          <div className="lang">
+            {["hr", "en", "de"].map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                className={lang === l ? "active" : ""}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <a href="/" className="back">
+            {t.home}
+          </a>
+        </div>
       </nav>
 
       <section className="section">
-        <p className="badge">TEMPLATE SHOP</p>
-        <h1>Odaberi web template</h1>
-        <p>Gotove web stranice koje se mogu prilagoditi tvom biznisu.</p>
+        <p className="badge">{t.badge}</p>
+        <h1>{t.title}</h1>
+        <p>{t.text}</p>
+
+        {products.length === 0 && <p>{t.empty}</p>}
 
         <div className="products">
           {products.map((product) => (
-            <a className="productCard" href={`/shop/${product.slug}`} key={product.id}>
-              <img src={product.coverImage} alt={product.title} />
-              <h2>{product.title}</h2>
-              <p>{product.shortDescription}</p>
+            <a
+              className="productCard"
+              href={`/shop/${product.slug}?lang=${lang}`}
+              key={product.id}
+            >
+              <img src={product.cover_image} alt={productText(product, "title", lang)} />
+              <h2>{productText(product, "title", lang)}</h2>
+              <p>{productText(product, "short_description", lang)}</p>
               <strong>{product.price}</strong>
             </a>
           ))}
@@ -40,9 +108,20 @@ export default function ShopPage() {
 }
 
 const styles = `
-body { margin: 0; font-family: Arial, sans-serif; background: #070a13; color: white; }
-* { box-sizing: border-box; }
-a { color: inherit; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #070a13;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
 
 .nav {
   height: 82px;
@@ -54,7 +133,8 @@ a { color: inherit; }
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-.brand, .back {
+.brand,
+.back {
   text-decoration: none;
   font-weight: 900;
 }
@@ -72,6 +152,36 @@ a { color: inherit; }
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, #3b82f6, #a855f7);
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lang {
+  display: flex;
+  gap: 6px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 5px;
+  border-radius: 999px;
+}
+
+.lang button {
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 999px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.lang button.active {
+  background: white;
+  color: #070a13;
 }
 
 .section {
@@ -131,8 +241,25 @@ p {
 }
 
 @media (max-width: 900px) {
-  .nav { padding: 0 22px; }
-  .section { padding: 60px 22px; }
-  .products { grid-template-columns: 1fr; }
+  .nav {
+    padding: 18px 22px;
+    height: auto;
+    min-height: 82px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .section {
+    padding: 60px 22px;
+  }
+
+  .products {
+    grid-template-columns: 1fr;
+  }
+
+  .navRight {
+    flex-wrap: wrap;
+  }
 }
 `;

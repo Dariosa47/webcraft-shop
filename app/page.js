@@ -1,86 +1,163 @@
 "use client";
 import { useEffect, useState } from "react";
+import { supabase } from "./lib/supabase";
 
 const translations = {
   hr: {
+    brand: "KrpaDevelopment",
     about: "O meni",
     shop: "Shop",
     pricing: "Cijene",
     contact: "Kontakt",
-    heroBadge: "WEB STRANICE + ADMIN PANEL",
-    heroTitle: "Web stranice koje klijent sam uređuje",
-    heroText:
-      "Izrađujem moderne web stranice za male biznise s jednostavnim admin panelom. Bez WordPress komplikacija.",
+    heroBadge: "GOTOVI WEB TEMPLATE-I + ADMIN PANEL",
+    heroTitle: "Gotove web stranice koje sam uređuješ",
+    heroText: "Nudim gotove template web stranica koji se u samo par minuta preprave i ne zahtijevaju nikakvo predznanje programiranja.",
     primary: "Pogledaj template",
     secondary: "Kontaktiraj me",
     latest: "Najnoviji template-i",
     latestText: "Zadnji dodani proizvodi iz shopa.",
+    latestBadge: "NAJNOVIJI TEMPLATE",
+    openProduct: "Otvori proizvod",
     aboutTitle: "Što nudim?",
-    aboutText:
-      "Gotove web stranice za frizere, restorane, fitness studije i male firme. Svaka stranica ima admin panel za uređivanje sadržaja.",
+    aboutText: "Izrađujem moderne web stranice za male biznise. Klijent dobije gotov dizajn, admin panel i mogućnost da sam mijenja tekstove, slike, cijene, galeriju i kontakt bez programiranja.",
     pricingTitle: "Cijene",
-    setup: "Izrada template-a",
-    support: "Hosting + support",
-    footer: "Web stranice za male biznise"
+    templatePriceTitle: "Gotovi template-i",
+    templatePrice: "100€ – 200€",
+    templatePriceText: "Gotova web stranica prilagođena tvojem biznisu.",
+    customPriceTitle: "Custom stranica",
+    customPrice: "500€+",
+    customPriceText: "Poseban dizajn i funkcionalnosti izrađene po dogovoru.",
+    hostingPriceTitle: "Hosting + support",
+    hostingPrice: "30€/mj",
+    hostingPriceText: "Deploy, hosting, tehničko održavanje, support i manje izmjene. Sve mi riješimo za tebe.",
+    contactTitle: "Pokrenimo tvoj web",
+    contactText: "Javi mi se za demo, cijenu ili dogovor oko template-a.",
+    whatsapp: "WhatsApp",
+    email: "Email",
+    footer: "Gotovi web template-i za male biznise",
+    featureAdminTitle: "Admin panel",
+    featureAdminText: "Klijent sam mijenja tekst, slike, cijene, galeriju i kontakt.",
+    featureResponsiveTitle: "Responsive",
+    featureResponsiveText: "Stranica radi na mobitelu, tabletu i računalu.",
+    featureStyleTitle: "Boje i stil",
+    featureStyleText: "Moguće je mijenjati boje, slike i sadržaj stranice.",
+    featureWhatsappTitle: "WhatsApp",
+    featureWhatsappText: "Direktan kontakt i rezervacije preko telefona ili WhatsAppa.",
+    adminPanel: "Admin panel",
+    services: "Usluge"
   },
   en: {
+    brand: "KrpaDevelopment",
     about: "About",
     shop: "Shop",
     pricing: "Pricing",
     contact: "Contact",
-    heroBadge: "WEBSITES + ADMIN PANEL",
-    heroTitle: "Websites your client can edit themselves",
-    heroText:
-      "I build modern websites for small businesses with a simple admin panel. No WordPress mess.",
+    heroBadge: "READY-MADE WEBSITE TEMPLATES + ADMIN PANEL",
+    heroTitle: "Ready-made websites you can edit yourself",
+    heroText: "I offer ready-made website templates that can be customized in just a few minutes and require no programming knowledge.",
     primary: "View templates",
     secondary: "Contact me",
     latest: "Latest templates",
     latestText: "Newest products from the shop.",
+    latestBadge: "LATEST TEMPLATE",
+    openProduct: "Open product",
     aboutTitle: "What do I offer?",
-    aboutText:
-      "Ready-made websites for salons, restaurants, gyms and small businesses. Each website has an admin panel for editing content.",
+    aboutText: "I build modern websites for small businesses. The client gets a finished design, admin panel and can edit texts, images, prices, gallery and contact details without programming.",
     pricingTitle: "Pricing",
-    setup: "Template setup",
-    support: "Hosting + support",
-    footer: "Websites for small businesses"
+    templatePriceTitle: "Ready-made templates",
+    templatePrice: "100€ – 200€",
+    templatePriceText: "A ready-made website customized for your business.",
+    customPriceTitle: "Custom website",
+    customPrice: "500€+",
+    customPriceText: "Custom design and functionality built by agreement.",
+    hostingPriceTitle: "Hosting + support",
+    hostingPrice: "30€/mo",
+    hostingPriceText: "Deploy, hosting, technical maintenance, support and smaller changes. We handle everything for you.",
+    contactTitle: "Let’s launch your website",
+    contactText: "Contact me for a demo, pricing or template agreement.",
+    whatsapp: "WhatsApp",
+    email: "Email",
+    footer: "Ready-made website templates for small businesses",
+    featureAdminTitle: "Admin panel",
+    featureAdminText: "The client can edit text, images, prices, gallery and contact details.",
+    featureResponsiveTitle: "Responsive",
+    featureResponsiveText: "The website works on mobile, tablet and desktop.",
+    featureStyleTitle: "Colors and style",
+    featureStyleText: "Colors, images and website content can be changed.",
+    featureWhatsappTitle: "WhatsApp",
+    featureWhatsappText: "Direct contact and bookings via phone or WhatsApp.",
+    adminPanel: "Admin panel",
+    services: "Services"
   },
   de: {
+    brand: "KrpaDevelopment",
     about: "Über mich",
     shop: "Shop",
     pricing: "Preise",
     contact: "Kontakt",
-    heroBadge: "WEBSEITEN + ADMIN PANEL",
-    heroTitle: "Webseiten die Kunden selbst bearbeiten können",
-    heroText:
-      "Ich erstelle moderne Webseiten für kleine Unternehmen mit einfachem Admin Panel. Kein WordPress-Chaos.",
+    heroBadge: "FERTIGE WEBSITE-TEMPLATES + ADMIN PANEL",
+    heroTitle: "Fertige Webseiten die du selbst bearbeiten kannst",
+    heroText: "Ich biete fertige Website-Templates an, die in wenigen Minuten angepasst werden können und keine Programmierkenntnisse benötigen.",
     primary: "Templates ansehen",
     secondary: "Kontakt",
     latest: "Neueste Templates",
     latestText: "Die neuesten Produkte aus dem Shop.",
+    latestBadge: "NEUESTES TEMPLATE",
+    openProduct: "Produkt öffnen",
     aboutTitle: "Was biete ich an?",
-    aboutText:
-      "Fertige Webseiten für Salons, Restaurants, Fitnessstudios und kleine Firmen. Jede Website hat ein Admin Panel.",
+    aboutText: "Ich erstelle moderne Webseiten für kleine Unternehmen. Der Kunde bekommt ein fertiges Design, ein Admin Panel und kann Texte, Bilder, Preise, Galerie und Kontakt selbst ändern.",
     pricingTitle: "Preise",
-    setup: "Template Erstellung",
-    support: "Hosting + Support",
-    footer: "Webseiten für kleine Unternehmen"
+    templatePriceTitle: "Fertige Templates",
+    templatePrice: "100€ – 200€",
+    templatePriceText: "Eine fertige Website, angepasst an dein Unternehmen.",
+    customPriceTitle: "Custom Website",
+    customPrice: "500€+",
+    customPriceText: "Individuelles Design und Funktionen nach Absprache.",
+    hostingPriceTitle: "Hosting + Support",
+    hostingPrice: "30€/Monat",
+    hostingPriceText: "Deploy, Hosting, technische Wartung, Support und kleinere Änderungen. Wir übernehmen alles für dich.",
+    contactTitle: "Starten wir deine Website",
+    contactText: "Melde dich für Demo, Preis oder Template-Abstimmung.",
+    whatsapp: "WhatsApp",
+    email: "E-Mail",
+    footer: "Fertige Website-Templates für kleine Unternehmen",
+    featureAdminTitle: "Admin Panel",
+    featureAdminText: "Der Kunde kann Texte, Bilder, Preise, Galerie und Kontakt selbst ändern.",
+    featureResponsiveTitle: "Responsive",
+    featureResponsiveText: "Die Website funktioniert auf Handy, Tablet und Desktop.",
+    featureStyleTitle: "Farben und Stil",
+    featureStyleText: "Farben, Bilder und Website-Inhalte können geändert werden.",
+    featureWhatsappTitle: "WhatsApp",
+    featureWhatsappText: "Direkter Kontakt und Buchungen per Telefon oder WhatsApp.",
+    adminPanel: "Admin Panel",
+    services: "Leistungen"
   }
 };
+
+function productText(product, field, lang) {
+  const key = `${field}_${lang}`;
+  return product?.[key] || product?.[field] || "";
+}
 
 export default function Home() {
   const [lang, setLang] = useState("hr");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
-
   const t = translations[lang];
 
   useEffect(() => {
-    fetch("/api/products")
-      .then((r) => r.json())
-      .then((items) => {
-        const active = items.filter((p) => p.active);
-        setProducts(active.slice(-2).reverse());
-      });
+    async function loadProducts() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(2);
+
+      if (!error) setProducts(data || []);
+    }
+
+    loadProducts();
   }, []);
 
   const latestProduct = products[0];
@@ -90,79 +167,42 @@ export default function Home() {
       <style>{styles}</style>
 
       <div className="page">
-        <Nav
-          t={t}
-          lang={lang}
-          setLang={setLang}
-          drawerOpen={drawerOpen}
-          setDrawerOpen={setDrawerOpen}
-        />
+        <Nav t={t} lang={lang} setLang={setLang} drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
 
         <section className="hero">
           <div>
             <div className="badge">✨ {t.heroBadge}</div>
-
             <h1>{t.heroTitle}</h1>
-
             <p>{t.heroText}</p>
 
             <div className="actions">
-              <a href="/shop" className="primaryBtn">
-                {t.primary}
-              </a>
-              <a href="#contact" className="secondaryBtn">
-                {t.secondary}
-              </a>
+              <a href="/shop" className="primaryBtn">{t.primary}</a>
+              <a href="#contact" className="secondaryBtn">{t.secondary}</a>
             </div>
           </div>
 
-          <a
-            href={latestProduct ? `/shop/${latestProduct.slug}` : "/shop"}
-            className="mock latest-product"
-          >
-            <div className="mockTop">
-              <span></span>
-              <span></span>
-              <span></span>
+          <a href={latestProduct ? `/shop/${latestProduct.slug}` : "/shop"} className="mock">
+            <div className="mockTop"><span></span><span></span><span></span></div>
+
+            <div
+              className="mockHero"
+            style={{
+  backgroundImage: latestProduct
+    ? `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url("${latestProduct.cover_image}")`
+    : undefined,
+  backgroundSize: "cover",
+  backgroundPosition: "center"
+}}
+            >
+              <p>{latestProduct ? t.latestBadge : "SALON TEMPLATE"}</p>
+              <h2>{latestProduct ? productText(latestProduct, "title", lang) : t.adminPanel}</h2>
             </div>
 
-            {latestProduct ? (
-              <>
-                <div
-                  className="mockHero"
-                  style={{
-                    background: `
-                      linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
-                      url("${latestProduct.coverImage}")
-                    `,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }}
-                >
-                  <p>NAJNOVIJI TEMPLATE</p>
-                  <h2>{latestProduct.title}</h2>
-                </div>
-
-                <div className="mockCards">
-                  <div>{latestProduct.price}</div>
-                  <div>Admin panel</div>
-                  <div>Otvori proizvod</div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="mockHero">
-                  <p>SALON TEMPLATE</p>
-                  <h2>Admin panel</h2>
-                </div>
-
-                <div className="mockCards">
-                  <div>Usluge</div>
-                  <div>Galerija</div>
-                  <div>Kontakt</div>
-                </div>
-              </>
-            )}
+            <div className="mockCards">
+              <div>{latestProduct ? latestProduct.price : t.services}</div>
+              <div>{t.adminPanel}</div>
+              <div>{t.openProduct}</div>
+            </div>
           </a>
         </section>
 
@@ -171,26 +211,10 @@ export default function Home() {
           <p>{t.aboutText}</p>
 
           <div className="features">
-            <Card
-              icon="🛠️"
-              title="Admin panel"
-              text="Klijent sam mijenja tekst, slike, cijene, galeriju i kontakt."
-            />
-            <Card
-              icon="📱"
-              title="Responsive"
-              text="Stranica radi na mobitelu, tabletu i računalu."
-            />
-            <Card
-              icon="🎨"
-              title="Boje i stil"
-              text="Moguće mijenjati boje, slike i sadržaj."
-            />
-            <Card
-              icon="💬"
-              title="WhatsApp"
-              text="Direktan kontakt i rezervacije preko WhatsAppa."
-            />
+            <Card icon="🛠️" title={t.featureAdminTitle} text={t.featureAdminText} />
+            <Card icon="📱" title={t.featureResponsiveTitle} text={t.featureResponsiveText} />
+            <Card icon="🎨" title={t.featureStyleTitle} text={t.featureStyleText} />
+            <Card icon="💬" title={t.featureWhatsappTitle} text={t.featureWhatsappText} />
           </div>
         </section>
 
@@ -200,15 +224,12 @@ export default function Home() {
               <h2>{t.latest}</h2>
               <p>{t.latestText}</p>
             </div>
-
-            <a href="/shop" className="secondaryBtn">
-              Shop →
-            </a>
+            <a href="/shop" className="secondaryBtn">Shop →</a>
           </div>
 
           <div className="products">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} lang={lang} />
             ))}
           </div>
         </section>
@@ -218,43 +239,38 @@ export default function Home() {
 
           <div className="pricing">
             <div className="priceBox">
-              <h3>{t.setup}</h3>
-              <strong>150€+</strong>
-              <p>Izrada i prilagodba template-a za klijenta.</p>
+              <h3>{t.templatePriceTitle}</h3>
+              <strong>{t.templatePrice}</strong>
+              <p>{t.templatePriceText}</p>
             </div>
 
             <div className="priceBox">
-              <h3>{t.support}</h3>
-              <strong>20€/mj</strong>
-              <p>Deploy, hosting, osnovni support i održavanje.</p>
+              <h3>{t.customPriceTitle}</h3>
+              <strong>{t.customPrice}</strong>
+              <p>{t.customPriceText}</p>
+            </div>
+
+            <div className="priceBox">
+              <h3>{t.hostingPriceTitle}</h3>
+              <strong>{t.hostingPrice}</strong>
+              <p>{t.hostingPriceText}</p>
             </div>
           </div>
         </section>
 
         <section id="contact" className="section">
           <div className="contactBox">
-            <h2>Pokrenimo tvoj web</h2>
-            <p>Javi mi se za demo, cijenu ili dogovor oko template-a.</p>
+            <h2>{t.contactTitle}</h2>
+            <p>{t.contactText}</p>
 
             <div className="actions center">
-              <a
-                href="https://wa.me/38599123456"
-                target="_blank"
-                className="primaryBtn"
-              >
-                WhatsApp
-              </a>
-
-              <a href="mailto:tvojemail@example.com" className="secondaryBtn">
-                Email
-              </a>
+              <a href="https://wa.me/385994157416" target="_blank" className="primaryBtn">{t.whatsapp}</a>
+              <a href="mailto:krpadevelopment@gmail.com" className="secondaryBtn">{t.email}</a>
             </div>
           </div>
         </section>
 
-        <footer>
-          © {new Date().getFullYear()} WebCraft — {t.footer}
-        </footer>
+        <footer>© {new Date().getFullYear()} {t.brand} — {t.footer}</footer>
       </div>
     </main>
   );
@@ -264,47 +280,31 @@ function Nav({ t, lang, setLang, drawerOpen, setDrawerOpen }) {
   return (
     <>
       <nav className="nav">
-        <a href="/" className="brand">
-          <span>⚡</span> WebCraft
-        </a>
+        <a href="/" className="brand"><span>⚡</span> {t.brand}</a>
 
         <div className="desktopNav">
           <a href="/#about">{t.about}</a>
           <a href="/shop">{t.shop}</a>
           <a href="/#pricing">{t.pricing}</a>
           <a href="/#contact">{t.contact}</a>
-
           <Lang lang={lang} setLang={setLang} />
         </div>
 
-        <button className="hamburger" onClick={() => setDrawerOpen(true)}>
-          ☰
-        </button>
+        <button className="hamburger" onClick={() => setDrawerOpen(true)}>☰</button>
       </nav>
 
-      <div
-        className={`backdrop ${drawerOpen ? "open" : ""}`}
-        onClick={() => setDrawerOpen(false)}
-      />
+      <div className={`backdrop ${drawerOpen ? "open" : ""}`} onClick={() => setDrawerOpen(false)} />
 
       <aside className={`drawer ${drawerOpen ? "open" : ""}`}>
         <div className="drawerTop">
-          <strong>WebCraft</strong>
+          <strong>{t.brand}</strong>
           <button onClick={() => setDrawerOpen(false)}>✕</button>
         </div>
 
-        <a onClick={() => setDrawerOpen(false)} href="/#about">
-          {t.about}
-        </a>
-        <a onClick={() => setDrawerOpen(false)} href="/shop">
-          {t.shop}
-        </a>
-        <a onClick={() => setDrawerOpen(false)} href="/#pricing">
-          {t.pricing}
-        </a>
-        <a onClick={() => setDrawerOpen(false)} href="/#contact">
-          {t.contact}
-        </a>
+        <a onClick={() => setDrawerOpen(false)} href="/#about">{t.about}</a>
+        <a onClick={() => setDrawerOpen(false)} href="/shop">{t.shop}</a>
+        <a onClick={() => setDrawerOpen(false)} href="/#pricing">{t.pricing}</a>
+        <a onClick={() => setDrawerOpen(false)} href="/#contact">{t.contact}</a>
 
         <div style={{ marginTop: 20 }}>
           <Lang lang={lang} setLang={setLang} />
@@ -318,11 +318,7 @@ function Lang({ lang, setLang }) {
   return (
     <div className="lang">
       {["hr", "en", "de"].map((l) => (
-        <button
-          key={l}
-          onClick={() => setLang(l)}
-          className={lang === l ? "active" : ""}
-        >
+        <button key={l} onClick={() => setLang(l)} className={lang === l ? "active" : ""}>
           {l.toUpperCase()}
         </button>
       ))}
@@ -340,13 +336,13 @@ function Card({ icon, title, text }) {
   );
 }
 
-function ProductCard({ product }) {
+function ProductCard({ product, lang }) {
   return (
     <a className="productCard" href={`/shop/${product.slug}`}>
-      <img src={product.coverImage} alt={product.title} />
+      <img src={product.cover_image} alt={productText(product, "title", lang)} />
       <div>
-        <h3>{product.title}</h3>
-        <p>{product.shortDescription}</p>
+        <h3>{productText(product, "title", lang)}</h3>
+        <p>{productText(product, "short_description", lang)}</p>
         <strong>{product.price}</strong>
       </div>
     </a>
@@ -584,11 +580,6 @@ a { color: inherit; }
   cursor: pointer;
 }
 
-.mock:hover {
-  animation-play-state: paused;
-  transform: translateY(-8px) scale(1.02);
-}
-
 .mockTop {
   height: 44px;
   background: #e5e7eb;
@@ -714,7 +705,7 @@ a { color: inherit; }
 
 .pricing {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 22px;
   margin-top: 42px;
 }
@@ -741,22 +732,15 @@ footer {
 }
 
 @keyframes bounceProduct {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-16px) scale(1.02);
-  }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.02); }
 }
 
 @media (max-width: 960px) {
   .nav { padding: 0 22px; }
   .desktopNav { display: none; }
   .hamburger { display: block; }
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 58px 22px;
-  }
+  .hero { grid-template-columns: 1fr; padding: 58px 22px; }
   .mock { min-height: 420px; }
   .section { padding: 76px 22px; }
   .features, .products, .pricing { grid-template-columns: 1fr; }

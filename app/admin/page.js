@@ -1,54 +1,75 @@
 "use client";
 import { useEffect, useState } from "react";
-
-const ADMIN_PASSWORD = "1234";
+import { supabase } from "../lib/supabase";
 
 const emptyProduct = {
   title: "",
+  title_hr: "",
+  title_en: "",
+  title_de: "",
+
   slug: "",
   price: "",
-  shortDescription: "",
+
+  short_description: "",
+  short_description_hr: "",
+  short_description_en: "",
+  short_description_de: "",
+
   description: "",
-  coverImage: "",
+  description_hr: "",
+  description_en: "",
+  description_de: "",
+
+  cover_image: "",
   images: [],
-  videoUrl: "",
+  video_url: "",
   active: true
 };
 
 export default function AdminPage() {
-  const [authorized, setAuthorized] = useState(false);
-  const [password, setPassword] = useState("");
+  const [session, setSession] = useState(null);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [products, setProducts] = useState([]);
   const [current, setCurrent] = useState(emptyProduct);
   const [editingId, setEditingId] = useState(null);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("mainAdminAuth") === "true") {
-      setAuthorized(true);
-    }
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      if (data.session) fetchProducts();
+    });
 
-    fetchProducts();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) fetchProducts();
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  function fetchProducts() {
-    fetch("/api/products")
-      .then((r) => r.json())
-      .then(setProducts);
+  async function login() {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginData.email,
+      password: loginData.password
+    });
+
+    if (error) alert("Krivi email ili lozinka.");
   }
 
-  function login() {
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("mainAdminAuth", "true");
-      setAuthorized(true);
-    } else {
-      alert("Kriva lozinka");
-    }
+  async function logout() {
+    await supabase.auth.signOut();
+    setSession(null);
   }
 
-  function logout() {
-    localStorage.removeItem("mainAdminAuth");
-    setAuthorized(false);
+  async function fetchProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error) setProducts(data || []);
   }
 
   function slugify(text) {
@@ -67,41 +88,57 @@ export default function AdminPage() {
   function update(field, value) {
     const updated = { ...current, [field]: value };
 
-    if (field === "title" && !editingId) {
+    if ((field === "title" || field === "title_hr") && !editingId) {
       updated.slug = slugify(value);
     }
 
     setCurrent(updated);
   }
 
-  function uploadImage(field, file) {
-    if (!file) return;
+  async function uploadToSupabase(file) {
+    if (!file) return "";
 
-    const reader = new FileReader();
+    const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, "-");
+    const fileName = `${Date.now()}-${cleanName}`;
 
-    reader.onload = () => {
-      setCurrent({
-        ...current,
-        [field]: reader.result
+    const { error } = await supabase.storage
+      .from("product-images")
+      .upload(fileName, file, {
+        cacheControl: "3600",
+        upsert: false
       });
-    };
 
-    reader.readAsDataURL(file);
+    if (error) {
+      alert("Upload slike nije uspio.");
+      console.error(error);
+      return "";
+    }
+
+    const { data } = supabase.storage
+      .from("product-images")
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
   }
 
-  function addGalleryImage(file) {
-    if (!file) return;
+  async function uploadCover(file) {
+    const url = await uploadToSupabase(file);
+    if (!url) return;
 
-    const reader = new FileReader();
+    setCurrent({
+      ...current,
+      cover_image: url
+    });
+  }
 
-    reader.onload = () => {
-      setCurrent({
-        ...current,
-        images: [...(current.images || []), reader.result]
-      });
-    };
+  async function addGalleryImage(file) {
+    const url = await uploadToSupabase(file);
+    if (!url) return;
 
-    reader.readAsDataURL(file);
+    setCurrent({
+      ...current,
+      images: [...(current.images || []), url]
+    });
   }
 
   function deleteGalleryImage(index) {
@@ -111,63 +148,94 @@ export default function AdminPage() {
     });
   }
 
-  function saveProduct() {
-    if (!current.title || !current.slug) {
-      alert("Naslov i slug su obavezni.");
+  async function saveProduct() {
+    const finalTitle = current.title_hr || current.title;
+
+    if (!finalTitle || !current.slug) {
+      alert("Naslov HR ili osnovni naslov i slug su obavezni.");
       return;
     }
 
-    let updatedProducts;
+    const payload = {
+      title: finalTitle,
+      title_hr: current.title_hr || finalTitle,
+      title_en: current.title_en,
+      title_de: current.title_de,
+
+      slug: current.slug,
+      price: current.price,
+
+      short_description: current.short_description_hr || current.short_description,
+      short_description_hr: current.short_description_hr || current.short_description,
+      short_description_en: current.short_description_en,
+      short_description_de: current.short_description_de,
+
+      description: current.description_hr || current.description,
+      description_hr: current.description_hr || current.description,
+      description_en: current.description_en,
+      description_de: current.description_de,
+
+      cover_image: current.cover_image,
+      images: current.images || [],
+      video_url: current.video_url,
+      active: current.active
+    };
 
     if (editingId) {
-      updatedProducts = products.map((p) =>
-        p.id === editingId ? { ...current, id: editingId } : p
-      );
-    } else {
-      const newProduct = {
-        ...current,
-        id: Date.now(),
-        createdAt: new Date().toISOString().slice(0, 10)
-      };
+      const { error } = await supabase
+        .from("products")
+        .update(payload)
+        .eq("id", editingId);
 
-      updatedProducts = [...products, newProduct];
+      if (error) {
+        alert("Greška kod spremanja.");
+        console.error(error);
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from("products")
+        .insert(payload);
+
+      if (error) {
+        alert("Greška kod dodavanja.");
+        console.error(error);
+        return;
+      }
     }
 
-    fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(updatedProducts)
-    }).then(() => {
-      setProducts(updatedProducts);
-      setCurrent(emptyProduct);
-      setEditingId(null);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    });
+    setCurrent(emptyProduct);
+    setEditingId(null);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+    fetchProducts();
   }
 
   function editProduct(product) {
-    setCurrent(product);
+    setCurrent({
+      ...emptyProduct,
+      ...product,
+      images: product.images || []
+    });
     setEditingId(product.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function deleteProduct(id) {
+  async function deleteProduct(id) {
     if (!confirm("Obrisati proizvod?")) return;
 
-    const updated = products.filter((p) => p.id !== id);
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", id);
 
-    fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(updated)
-    }).then(() => {
-      setProducts(updated);
-    });
+    if (error) {
+      alert("Brisanje nije uspjelo.");
+      console.error(error);
+      return;
+    }
+
+    fetchProducts();
   }
 
   function newProduct() {
@@ -175,25 +243,34 @@ export default function AdminPage() {
     setEditingId(null);
   }
 
-  if (!authorized) {
+  if (!session) {
     return (
       <div style={loginPage}>
         <div style={loginBox}>
           <h1>Admin login</h1>
-          <p>Lozinka za uređivanje shopa.</p>
+          <p>Prijavi se sa Supabase admin emailom.</p>
+
+          <input
+            style={input}
+            placeholder="Email"
+            value={loginData.email}
+            onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+          />
 
           <input
             type="password"
             style={input}
-            value={password}
             placeholder="Lozinka"
-            onChange={(e) => setPassword(e.target.value)}
+            value={loginData.password}
+            onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
             onKeyDown={(e) => {
               if (e.key === "Enter") login();
             }}
           />
 
-          <button style={saveButton} onClick={login}>Uđi</button>
+          <button style={saveButton} onClick={login}>
+            Uđi
+          </button>
         </div>
       </div>
     );
@@ -217,6 +294,10 @@ export default function AdminPage() {
           .product-row {
             grid-template-columns: 1fr !important;
           }
+
+          .gallery-grid {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
 
@@ -224,63 +305,149 @@ export default function AdminPage() {
         <div className="admin-header" style={header}>
           <div>
             <h1 style={{ margin: 0 }}>Shop Admin</h1>
-            <p style={{ color: "#cbd5e1" }}>Dodaj i uređuj svoje template proizvode.</p>
+            <p style={{ color: "#cbd5e1" }}>Dodaj i uređuj template proizvode na HR / EN / DE.</p>
           </div>
 
           <div style={{ display: "flex", gap: 10 }}>
-            <a href="/" target="_blank" style={whiteButton}>Pogledaj web</a>
-            <button onClick={logout} style={redButton}>Logout</button>
+            <a href="/" target="_blank" style={whiteButton}>
+              Pogledaj web
+            </a>
+            <button onClick={logout} style={redButton}>
+              Logout
+            </button>
           </div>
         </div>
 
         <section style={card}>
           <h2>{editingId ? "Uredi proizvod" : "Dodaj novi proizvod"}</h2>
 
+          <h3 style={subheading}>Osnovno</h3>
+
           <div className="two" style={two}>
             <div>
-              <Label text="Naslov proizvoda" />
-              <input style={input} value={current.title} onChange={(e) => update("title", e.target.value)} />
+              <Label text="Naslov HR" />
+              <input
+                style={input}
+                value={current.title_hr || ""}
+                onChange={(e) => update("title_hr", e.target.value)}
+              />
             </div>
 
             <div>
               <Label text="Slug/link proizvoda" />
-              <input style={input} value={current.slug} onChange={(e) => update("slug", e.target.value)} />
+              <input
+                style={input}
+                value={current.slug || ""}
+                onChange={(e) => update("slug", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="two" style={two}>
+            <div>
+              <Label text="Naslov EN" />
+              <input
+                style={input}
+                value={current.title_en || ""}
+                onChange={(e) => update("title_en", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label text="Naslov DE" />
+              <input
+                style={input}
+                value={current.title_de || ""}
+                onChange={(e) => update("title_de", e.target.value)}
+              />
             </div>
           </div>
 
           <div className="two" style={two}>
             <div>
               <Label text="Cijena" />
-              <input style={input} value={current.price} onChange={(e) => update("price", e.target.value)} />
+              <input
+                style={input}
+                value={current.price || ""}
+                onChange={(e) => update("price", e.target.value)}
+              />
             </div>
 
             <div>
               <Label text="Video URL iframe/embed" />
-              <input style={input} value={current.videoUrl} onChange={(e) => update("videoUrl", e.target.value)} />
+              <input
+                style={input}
+                value={current.video_url || ""}
+                onChange={(e) => update("video_url", e.target.value)}
+              />
             </div>
           </div>
 
-          <Label text="Kratki opis" />
-          <textarea style={textarea} value={current.shortDescription} onChange={(e) => update("shortDescription", e.target.value)} />
+          <h3 style={subheading}>Kratki opis</h3>
 
-          <Label text="Dugi opis" />
-          <textarea style={bigTextarea} value={current.description} onChange={(e) => update("description", e.target.value)} />
+          <Label text="Kratki opis HR" />
+          <textarea
+            style={textarea}
+            value={current.short_description_hr || ""}
+            onChange={(e) => update("short_description_hr", e.target.value)}
+          />
+
+          <Label text="Short description EN" />
+          <textarea
+            style={textarea}
+            value={current.short_description_en || ""}
+            onChange={(e) => update("short_description_en", e.target.value)}
+          />
+
+          <Label text="Kurzbeschreibung DE" />
+          <textarea
+            style={textarea}
+            value={current.short_description_de || ""}
+            onChange={(e) => update("short_description_de", e.target.value)}
+          />
+
+          <h3 style={subheading}>Dugi opis</h3>
+
+          <Label text="Opis HR" />
+          <textarea
+            style={bigTextarea}
+            value={current.description_hr || ""}
+            onChange={(e) => update("description_hr", e.target.value)}
+          />
+
+          <Label text="Description EN" />
+          <textarea
+            style={bigTextarea}
+            value={current.description_en || ""}
+            onChange={(e) => update("description_en", e.target.value)}
+          />
+
+          <Label text="Beschreibung DE" />
+          <textarea
+            style={bigTextarea}
+            value={current.description_de || ""}
+            onChange={(e) => update("description_de", e.target.value)}
+          />
+
+          <h3 style={subheading}>Slike i video</h3>
 
           <Label text="Cover slika" />
-          <input type="file" accept="image/*" style={input} onChange={(e) => uploadImage("coverImage", e.target.files[0])} />
+          <input type="file" accept="image/*" style={input} onChange={(e) => uploadCover(e.target.files[0])} />
 
-          {current.coverImage && (
-            <img src={current.coverImage} alt="Cover" style={previewImage} />
+          {current.cover_image && (
+            <img src={current.cover_image} alt="Cover" style={previewImage} />
           )}
 
           <Label text="Galerija slika" />
           <input type="file" accept="image/*" style={input} onChange={(e) => addGalleryImage(e.target.files[0])} />
 
-          <div style={galleryGrid}>
+          <div className="gallery-grid" style={galleryGrid}>
             {(current.images || []).map((img, i) => (
               <div key={i} style={galleryItem}>
                 <img src={img} alt={`Slika ${i + 1}`} style={galleryImage} />
-                <button style={redButton} onClick={() => deleteGalleryImage(i)}>Obriši</button>
+                <button style={redButton} onClick={() => deleteGalleryImage(i)}>
+                  Obriši
+                </button>
               </div>
             ))}
           </div>
@@ -312,10 +479,10 @@ export default function AdminPage() {
 
           {products.map((p) => (
             <div className="product-row" key={p.id} style={productRow}>
-              <img src={p.coverImage} alt={p.title} style={smallThumb} />
+              <img src={p.cover_image} alt={p.title_hr || p.title} style={smallThumb} />
 
               <div>
-                <strong>{p.title}</strong>
+                <strong>{p.title_hr || p.title}</strong>
                 <p style={{ color: "#94a3b8", margin: "6px 0" }}>
                   /shop/{p.slug} — {p.price}
                 </p>
@@ -325,8 +492,12 @@ export default function AdminPage() {
               </div>
 
               <div style={{ display: "flex", gap: 8 }}>
-                <button style={grayButton} onClick={() => editProduct(p)}>Uredi</button>
-                <button style={redButton} onClick={() => deleteProduct(p.id)}>Obriši</button>
+                <button style={grayButton} onClick={() => editProduct(p)}>
+                  Uredi
+                </button>
+                <button style={redButton} onClick={() => deleteProduct(p.id)}>
+                  Obriši
+                </button>
               </div>
             </div>
           ))}
@@ -394,6 +565,12 @@ const two = {
   gap: 14
 };
 
+const subheading = {
+  marginTop: 28,
+  marginBottom: 10,
+  color: "#e5e7eb"
+};
+
 const label = {
   color: "#cbd5e1",
   fontSize: 13,
@@ -407,7 +584,8 @@ const input = {
   borderRadius: 10,
   border: "1px solid #334155",
   background: "#0f172a",
-  color: "white"
+  color: "white",
+  marginBottom: 10
 };
 
 const textarea = {

@@ -1,27 +1,87 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { supabase } from "../../lib/supabase";
+
+const translations = {
+  hr: {
+    brand: "KrpaDevelopment",
+    shopBack: "← Shop",
+    badge: "TEMPLATE",
+    request: "Zatraži ovaj template",
+    all: "Svi template-i",
+    description: "Opis",
+    gallery: "Galerija",
+    notFound: "Proizvod nije pronađen",
+    backToShop: "Nazad na shop"
+  },
+  en: {
+    brand: "KrpaDevelopment",
+    shopBack: "← Shop",
+    badge: "TEMPLATE",
+    request: "Request this template",
+    all: "All templates",
+    description: "Description",
+    gallery: "Gallery",
+    notFound: "Product not found",
+    backToShop: "Back to shop"
+  },
+  de: {
+    brand: "KrpaDevelopment",
+    shopBack: "← Shop",
+    badge: "TEMPLATE",
+    request: "Dieses Template anfragen",
+    all: "Alle Templates",
+    description: "Beschreibung",
+    gallery: "Galerie",
+    notFound: "Produkt nicht gefunden",
+    backToShop: "Zurück zum Shop"
+  }
+};
+
+function productText(product, field, lang) {
+  const key = `${field}_${lang}`;
+  return product?.[key] || product?.[field] || "";
+}
 
 export default function ProductPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const [product, setProduct] = useState(null);
 
+  const langParam = searchParams.get("lang");
+  const lang = ["hr", "en", "de"].includes(langParam) ? langParam : "hr";
+  const t = translations[lang];
+
   useEffect(() => {
-    fetch("/api/products")
-      .then((r) => r.json())
-      .then((items) => {
-        const found = items.find((p) => p.slug === params.slug);
-        setProduct(found || false);
-      });
+    async function loadProduct() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("slug", params.slug)
+        .eq("active", true)
+        .single();
+
+      if (error) {
+        setProduct(false);
+        return;
+      }
+
+      setProduct(data);
+    }
+
+    loadProduct();
   }, [params.slug]);
 
-  if (product === null) return <p style={{ padding: 40 }}>Loading...</p>;
+  if (product === null) {
+    return <p style={{ padding: 40 }}>Loading...</p>;
+  }
 
   if (product === false) {
     return (
-      <main style={{ padding: 40, fontFamily: "Arial" }}>
-        <h1>Proizvod nije pronađen</h1>
-        <a href="/shop">Nazad na shop</a>
+      <main style={{ padding: 40, fontFamily: "Arial", background: "#070a13", color: "white", minHeight: "100vh" }}>
+        <h1>{t.notFound}</h1>
+        <a href={`/shop?lang=${lang}`}>{t.backToShop}</a>
       </main>
     );
   }
@@ -31,39 +91,54 @@ export default function ProductPage() {
       <style>{styles}</style>
 
       <nav className="nav">
-        <a href="/" className="brand"><span>⚡</span> WebCraft</a>
-        <a href="/shop" className="back">← Shop</a>
+        <a href="/" className="brand">
+          <span>⚡</span> {t.brand}
+        </a>
+
+        <a href={`/shop?lang=${lang}`} className="back">
+          {t.shopBack}
+        </a>
       </nav>
 
       <section className="hero">
         <div>
-          <p className="badge">TEMPLATE</p>
-          <h1>{product.title}</h1>
-          <p>{product.shortDescription}</p>
+          <p className="badge">{t.badge}</p>
+
+          <h1>{productText(product, "title", lang)}</h1>
+
+          <p>{productText(product, "short_description", lang)}</p>
+
           <strong className="price">{product.price}</strong>
 
           <div className="actions">
-            <a className="primaryBtn" href="https://wa.me/38599123456" target="_blank">
-              Zatraži ovaj template
+            <a
+              className="primaryBtn"
+              href={`https://wa.me/385994157416?text=${encodeURIComponent(
+                `${t.request}: ${productText(product, "title", lang)}`
+              )}`}
+              target="_blank"
+            >
+              {t.request}
             </a>
-            <a className="secondaryBtn" href="/shop">
-              Svi template-i
+
+            <a className="secondaryBtn" href={`/shop?lang=${lang}`}>
+              {t.all}
             </a>
           </div>
         </div>
 
-        <img src={product.coverImage} alt={product.title} />
+        <img src={product.cover_image} alt={productText(product, "title", lang)} />
       </section>
 
       <section className="section">
-        <h2>Opis</h2>
-        <p>{product.description}</p>
+        <h2>{t.description}</h2>
+        <p>{productText(product, "description", lang)}</p>
 
-        {product.videoUrl && (
+        {product.video_url && (
           <div className="video">
             <iframe
-              src={product.videoUrl}
-              title={product.title}
+              src={product.video_url}
+              title={productText(product, "title", lang)}
               allowFullScreen
             />
           </div>
@@ -71,10 +146,10 @@ export default function ProductPage() {
 
         {product.images?.length > 0 && (
           <>
-            <h2>Galerija</h2>
+            <h2>{t.gallery}</h2>
             <div className="gallery">
               {product.images.map((img, i) => (
-                <img src={img} alt={`${product.title} ${i + 1}`} key={i} />
+                <img src={img} alt={`${productText(product, "title", lang)} ${i + 1}`} key={i} />
               ))}
             </div>
           </>
@@ -85,9 +160,20 @@ export default function ProductPage() {
 }
 
 const styles = `
-body { margin: 0; font-family: Arial, sans-serif; background: #070a13; color: white; }
-* { box-sizing: border-box; }
-a { color: inherit; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #070a13;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
 
 .nav {
   height: 82px;
@@ -99,7 +185,8 @@ a { color: inherit; }
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-.brand, .back {
+.brand,
+.back {
   text-decoration: none;
   font-weight: 900;
 }
@@ -167,7 +254,8 @@ p {
   flex-wrap: wrap;
 }
 
-.primaryBtn, .secondaryBtn {
+.primaryBtn,
+.secondaryBtn {
   padding: 15px 22px;
   border-radius: 999px;
   text-decoration: none;
@@ -221,10 +309,25 @@ p {
 }
 
 @media (max-width: 900px) {
-  .nav { padding: 0 22px; }
-  .hero { grid-template-columns: 1fr; padding: 60px 22px; }
-  .section { padding: 50px 22px; }
-  .gallery { grid-template-columns: 1fr; }
-  .hero img { height: 340px; }
+  .nav {
+    padding: 0 22px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 60px 22px;
+  }
+
+  .section {
+    padding: 50px 22px;
+  }
+
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .hero img {
+    height: 340px;
+  }
 }
 `;
